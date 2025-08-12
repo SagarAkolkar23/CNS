@@ -27,11 +27,10 @@ class _HodLoginScreenState extends ConsumerState<HodLoginScreen> {
               email: emailController.text.trim(),
               password: passwordController.text.trim(),
             );
-        // Navigate to dashboard or next screen
+        context.go("/Hod/HomeScreen");
       } catch (e) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(e.toString())));
+        ScaffoldMessenger.of(context,)
+        .showSnackBar(SnackBar(content: Text(e.toString())));
       } finally {
         setState(() => isLoading = false);
       }

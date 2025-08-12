@@ -1,9 +1,58 @@
+import 'package:cns/features/Parent/Auth/domain/repositories/ParentRepository.dart';
+import 'package:cns/features/Parent/Auth/presentation/provider/ParentProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+final splashControllerProvider = Provider<SplashController>((ref) {
+  return SplashController(parentRepository: ref.read(parentRepositoryProvider));
+});
+
+class SplashController {
+  final ParentRepository parentRepository;
+  SplashController({required this.parentRepository});
+
+  Future<void> decideNavigation(BuildContext context) async {
+    await Future.delayed(const Duration(seconds: 2));
+
+    // 1️⃣ Check if HOD logged in via FirebaseAuth
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      // Read Firestore for HOD role
+      // This assumes 'role' is stored in users/{uid}
+      final role = await getUserRole(user.uid);
+      if (role == "hod") {
+        context.go("/Hod/HomeScreen");
+        return;
+      }
+    }
+
+    // 2️⃣ Check if Parent is locally registered
+    final isParentRegistered = await parentRepository
+        .isParentLocallyRegistered();
+    if (isParentRegistered) {
+      context.go("/Parent/HomeScreen");
+      return;
+    }
+
+    // 3️⃣ Fallback: Go to user selection
+    context.go("/SelectUser");
+  }
+
+  Future<String?> getUserRole(String uid) async {
+    final doc = await FirebaseFirestore.instance
+        .collection('registeredHod')
+        .doc(uid)
+        .get();
+    if (doc.exists) {
+      return doc.data()?['role'] as String?;
+    }
+    return null;
+  }
+}
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -16,36 +65,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _navigateAfterDelay();
-  }
-
-  Future<void> _navigateAfterDelay() async {
-    await Future.delayed(const Duration(seconds: 2));
-    final user = FirebaseAuth.instance.currentUser;
-
-    if (user != null) {
-      final role = await getUserRole(user.uid);
-      if (role == "hod") {
-        context.go("/Hod/HomeScreen");
-      } else if (role == "parent") {
-        context.go("/Parent/HomeScreen");
-      } else {
-        context.go("/SelectUser"); // fallback in case role is invalid
-      }
-    } else {
-      context.go("/SelectUser");
-    }
-  }
-
-  Future<String?> getUserRole(String uid) async {
-    final doc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .get();
-    if (doc.exists) {
-      return doc.data()?['role'] as String?;
-    }
-    return null;
+    ref.read(splashControllerProvider).decideNavigation(context);
   }
 
   @override

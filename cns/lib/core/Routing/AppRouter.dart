@@ -1,7 +1,7 @@
 import 'package:cns/features/HOD/Auth/presentation/Screens/HODLoginScreen.dart';
 import 'package:cns/features/HOD/Auth/presentation/Screens/HodSignUpScreen.dart';
 import 'package:cns/features/HOD/Dashboard/presentation/Screens/HodHomeScreen.dart';
-import 'package:cns/features/Parent/Auth/presentation/Screens/ParentLoginScreen.dart';
+import 'package:cns/features/Parent/Auth/presentation/Screens/ParentStartScreen.dart';
 import 'package:cns/features/Parent/Dashboard/presentation/Screens/ParentHomeScreen.dart';
 import 'package:cns/features/SelectUser/presentation/SelectUser.dart';
 import 'package:cns/features/SplashScreen/presentation/Screens/SplashScreen.dart';
@@ -26,8 +26,8 @@ class AppRouter {
         builder: (context, state) => HodHomeScreen(),
       ),
       GoRoute(
-        path: '/Parent/Login',
-        builder: (context, state) => ParentLoginScreen(),
+        path: '/Parent/Start',
+        builder: (context, state) => ParentStartScreen(),
       ),
       GoRoute(
         path: '/Parent/HomeScreen',

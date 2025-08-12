@@ -1,6 +1,7 @@
 import 'package:cns/features/HOD/Auth/presentation/Provider/AuthProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class HodSignupScreen extends ConsumerStatefulWidget {
   const HodSignupScreen({super.key});
@@ -31,8 +32,8 @@ class _HodSignupScreenState extends ConsumerState<HodSignupScreen> {
               password: passwordController.text.trim(),
               department: departmentController.text.trim(),
             );
-        // Navigate to login page or dashboard
-        // context.go('/hod_login');
+        
+        context.go('/Hod/Login');
       } catch (e) {
         ScaffoldMessenger.of(
           context,

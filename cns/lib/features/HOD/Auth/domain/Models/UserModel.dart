@@ -2,8 +2,9 @@ class UserModel {
   final String uid;
   final String name;
   final String email;
-  final String role; 
-  final String? department; 
+  final String role;
+  final String? department;
+  final List<String> parentDeviceIds; // New field
 
   UserModel({
     required this.uid,
@@ -11,6 +12,7 @@ class UserModel {
     required this.email,
     required this.role,
     this.department,
+    this.parentDeviceIds = const [], // Default empty list
   });
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
@@ -20,6 +22,9 @@ class UserModel {
       email: map['email'],
       role: map['role'],
       department: map['department'],
+      parentDeviceIds: List<String>.from(
+        map['parentDeviceIds'] ?? [],
+      ), // Safe conversion
     );
   }
 
@@ -30,6 +35,7 @@ class UserModel {
       'email': email,
       'role': role,
       'department': department,
+      'parentDeviceIds': parentDeviceIds, // Save list to Firestore
     };
   }
 }

@@ -53,7 +53,7 @@ class SelectUser extends StatelessWidget {
                   icon: Icons.family_restroom_rounded,
                   color: Colors.pinkAccent,
 
-                  routeName: '/Parent/Login',
+                  routeName: '/Parent/Start',
                 ),
               ],
             ),
